@@ -5,7 +5,7 @@ set -e
 function replace {
     VAR=${2:-$3}
     echo "Replacing '$1' with '$VAR'"
-    #sed -i "s/$1/VAR/g" /usr/local/etc/php-fpm.conf
+    sed -i "s/$1/$VAR/g" /usr/local/etc/php-fpm.conf
 }
 
 replace MAX_CHILDREN        $MAX_CHILDREN           15
