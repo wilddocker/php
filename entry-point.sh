@@ -2,21 +2,19 @@
 
 set -e
 
-echo "Replacing MAX_CHILDREN with '$MAX_CHILDREN'"
-echo "Replacing START_SERVERS with '$START_SERVERS'"
-echo "Replacing MIN_SPARE_SERVERS with '$MIN_SPARE_SERVERS'"
-echo "Replacing MAX_SPARE_SERVERS with '$MAX_SPARE_SERVERS'"
-echo "Replacing MEMORY_LIMIT with '$MEMORY_LIMIT'"
-echo "Replacing MAX_EXECUTION_TIME with '$MAX_EXECUTION_TIME'"
-echo "Replacing DATE_TIMEZONE with '$DATE_TIMEZONE'"
+function replace {
+    VAR=${2:-$3}
+    echo "Replacing '$1' with '$VAR'"
+    #sed -i "s/$1/VAR/g" /usr/local/etc/php-fpm.conf
+}
 
-sed -i "s/MAX_CHILDREN/$MAX_CHILDREN/g" /usr/local/etc/php-fpm.conf
-sed -i "s/START_SERVERS/$START_SERVERS/g" /usr/local/etc/php-fpm.conf
-sed -i "s/MIN_SPARE_SERVERS/$MIN_SPARE_SERVERS/g" /usr/local/etc/php-fpm.conf
-sed -i "s/MAX_SPARE_SERVERS/$MAX_SPARE_SERVERS/g" /usr/local/etc/php-fpm.conf
-sed -i "s/MEMORY_LIMIT/$MEMORY_LIMIT/g" /usr/local/etc/php-fpm.conf
-sed -i "s/MAX_EXECUTION_TIME/$MAX_EXECUTION_TIME/g" /usr/local/etc/php-fpm.conf
-sed -i "s/DATE_TIMEZONE/$DATE_TIMEZONE/g" /usr/local/etc/php-fpm.conf
+replace MAX_CHILDREN        $MAX_CHILDREN           15
+replace START_SERVERS       $START_SERVERS          5
+replace MIN_SPARE_SERVERS   $MIN_SPARE_SERVERS      3
+replace MAX_SPARE_SERVERS   $MAX_SPARE_SERVERS      5
+replace MEMORY_LIMIT        $MEMORY_LIMIT           512M
+replace MAX_EXECUTION_TIME  $MAX_EXECUTION_TIME     15
+replace DATE_TIMEZONE       $DATE_TIMEZONE          UTC
 
 if [ "$1" = 'php-fpm' ]; then
     exec php-fpm
