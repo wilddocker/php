@@ -4,8 +4,6 @@ MAINTAINER Ivan Kuznetsov "kuzma.wm@gmail.com"
 
 WORKDIR /var/www/html/web
 
-COPY load.ini /tmp/load.ini
-
 RUN echo 'php_admin_flag[log_errors] = on' >> /usr/local/etc/php-fpm.conf \
  && echo 'catch_workers_output = yes' >> /usr/local/etc/php-fpm.conf \
  && apt-get update \
@@ -18,7 +16,10 @@ RUN echo 'php_admin_flag[log_errors] = on' >> /usr/local/etc/php-fpm.conf \
  && pecl install memcache \
  && echo 'extension=memcache.so' >> /usr/local/etc/php/conf.d/memcache.ini \
  && docker-php-ext-install zip mysql pdo_mysql mbstring opcache gd \
- && cat /tmp/load.ini >> /usr/local/etc/php-fpm.conf
+ && php -r "readfile('https://getcomposer.org/installer');" | php \
+ && mv composer.phar /usr/bin/composer
+
+COPY load.ini /usr/local/etc/php/conf.d/load.ini
 
 COPY entry-point.sh /entry-point.sh
 ENTRYPOINT ["/entry-point.sh"]
